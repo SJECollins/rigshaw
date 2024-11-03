@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -9,6 +11,9 @@
             <p>Time: {{ journey.time }}</p>
             <p>Status: {{ journey.get_status_display }}</p>
             <p>Created by: <a href="{% url 'profile' journey.creator.pk %}">{{ journey.creator }}</a></p>
+            {% if review_eligibility|get_item:journey.creator.id %}
+                <a href="{% url 'create_review' journey=journey.pk reviewee=journey.creator.pk %}">Leave a review</a>
+            {% endif %}
             <div id="journey-map"></div>
             {% if user == journey.creator %}
             <a href="{% url 'update_journey' journey.pk %}">Update</a>
@@ -30,6 +35,9 @@
                                 </li>
                             {% else %}
                                 <li><a href="{% url 'profile' request.requester.userprofile.pk %}">{{ request.user }}</a> - Accepted</li>
+                                {% if review_eligibility|get_item:request.requester.id %}
+                                    <a href="{% url 'create_review' journey=journey.pk reviewee=request.requester.pk %}">Leave a review</a>
+                                {% endif %}
                             {% endif %}
                         {% endwith %}
                     {% elif request.status == 0 %}

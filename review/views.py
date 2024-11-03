@@ -8,7 +8,7 @@ from journey.models import Journey
 
 class MyReviewList(generic.ListView):
     model = Review
-    template_name = 'review/review_list.html'
+    template_name = 'reviews/review_list.html'
     context_object_name = 'reviews'
     
     def get_context_data(self, **kwargs):
@@ -31,7 +31,7 @@ class MyCreatedReviewList(generic.ListView):
 class CreateReview(LoginRequiredMixin, generic.CreateView):
     model = Review
     fields = ['rating', 'comment']
-    template_name = 'review/create_review.html'
+    template_name = 'reviews/create_review.html'
 
     def form_valid(self, form):
         form.instance.reviewer = self.request.user
@@ -45,12 +45,12 @@ class CreateReview(LoginRequiredMixin, generic.CreateView):
 class UpdateReview(LoginRequiredMixin, generic.UpdateView):
     model = Review
     fields = ['rating', 'comment']
-    template_name = 'review/update_review.html'
+    template_name = 'reviews/update_review.html'
 
 
 class DeleteReview(LoginRequiredMixin, generic.DeleteView):
     model = Review
-    template_name = 'review/delete_review.html'
+    template_name = 'reviews/delete_review.html'
     success_url = '/'
 
     def get_context_data(self, **kwargs):

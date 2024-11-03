@@ -7,7 +7,7 @@ Rough implementation of Rigshaw scenario UML db design for ATU CA2, using Django
 Some changes have been made to simplify implementation:
 
 - Using Django's default sqlite database rather than MySQL
-- "Verified" is not present on the User object. Using default User model and django-allauth, so relying on Allauth's email verification to handle verification of a user rather than customising the default model
+- Using django-allauth, so relying on Allauth's email verification to handle verification of a user rather than customising the default model
 - Not using GeoDjango so don't have access to PointFields, using separate lat and long DecimalFields for storing locations. There is a Leaflet package that apparently works well with GeoDjango but I haven't used either before and didn't want to go down a rabbit hole of new packages. Maybe later, could be nicer to work with
 - (Not sure of the best way to handle the notifications for requests and things yet.)
 

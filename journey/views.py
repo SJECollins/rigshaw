@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -137,12 +138,29 @@ def journey_detail(request, pk):
             if req.requester == request.user:
                 can_join = False
                 break
+    
+    journey_datetime = timezone.make_aware(datetime.combine(journey.date, journey.time))
+    review_eligibility = {}
+    if journey_datetime < timezone.now() + timedelta(hours=1):    
+        one_hour_before = journey_datetime - timedelta(hours=1)
+
+        journey_canceled = journey.status == 3 and journey.cancelled_time >= one_hour_before
+
+        for req in requests:
+            requester_withdrew = req.status == 3 and req.withdrawn_at and req.withdrawn_at >= one_hour_before
+            eligible = not journey_canceled and not requester_withdrew
+            review_eligibility[req.requester.id] = eligible
+
+        creator_eligible = not journey_canceled
+        review_eligibility[journey.creator.id] = creator_eligible
+    
     context = {
         'journey': journey,
         'requests': requests,
         'meetings': meetings,
         'active_meetings': active_meetings,
-        'can_join': can_join
+        'can_join': can_join,
+        'review_eligibility': review_eligibility
     }
     return render(request, 'journey/journey.html', context)
 
