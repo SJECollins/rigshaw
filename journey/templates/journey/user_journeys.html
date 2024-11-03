@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>My Journeys</h1>
+            <ul>
+                {% for journey in journeys %}
+                <li>
+                    <a href="{% url 'journey_detail' journey.pk %}">{{ journey.title }}</a>
+                    <br>
+                    Date: {{ journey.date }}
+                    <br>
+                    Time: {{ journey.time }}
+                    <br>
+                    Status: {{ journey.get_status_display }}
+                    <br>
+                    Created by: <a href="{% url 'profile' journey.creator.pk %}">{{ journey.creator }}</a>
+                    <br>
+                    <a href="{% url 'update_journey' journey.pk %}">Update</a>
+                    <a href="{% url 'cancel_journey' journey.pk %}">Cancel</a>
+                </li>
+                {% empty %}
+                <li>No journeys.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h2>My Requests</h2>
+            <ul>
+                {% for request in requests %}
+                <li>
+                    <a href="{% url 'journey_detail' request.journey.pk %}">{{ request.journey.title }}</a>
+                    <br>
+                    Date: {{ request.journey.date }}
+                    <br>
+                    Time: {{ request.journey.time }}
+                    <br>
+                    Status: {{ request.get_status_display }}
+                    <br>
+                    Created by: <a href="{% url 'profile' request.journey.creator.pk %}">{{ request.journey.creator }}</a>
+                    <br>
+                    <a href="{% url 'update_request' request.pk %}">Update</a>
+                    <a href="{% url 'withdraw_request' request.pk %}">Withdraw</a>
+                </li>
+                {% empty %}
+                <li>No requests.</li>
+                {% endfor %}
+        </div>
+    </div>
+{% endblock %}

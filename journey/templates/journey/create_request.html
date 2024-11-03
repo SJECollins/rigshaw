@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+    <div class="col-md-6">
+        <h1>Request to join journey</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ request_form|crispy }}
+            <div>
+                <input type="checkbox" id="add-meeting-checkbox"> Add Meeting Location
+            </div>
+            <div id="meeting-form" style="display: none;">
+                <h3>Meeting Details (Optional)</h3>
+                {{ meeting_form|crispy }}
+                <div id="map"></div>
+                <button id="clear" class="btn btn-danger">Clear Selection</button>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Send Request</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/map.js' %}"></script>
+<script src="{% static 'js/singleMarker.js' %}"></script>
+<script>
+    document.getElementById('add-meeting-checkbox').addEventListener('change', function() {
+        const meetingForm = document.getElementById('meeting-form');
+        if (this.checked) {
+            meetingForm.style.display = 'block';
+            if (map) {
+                map.invalidateSize();
+            }
+        } else {
+            meetingForm.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

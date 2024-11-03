@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h1>Journey: {{ journey.title }}</h1>
+            <p>Date: {{ journey.date }}</p>
+            <p>Time: {{ journey.time }}</p>
+            <p>Status: {{ journey.get_status_display }}</p>
+            <p>Created by: <a href="{% url 'profile' journey.creator.pk %}">{{ journey.creator }}</a></p>
+            <div id="journey-map"></div>
+            {% if user == journey.creator %}
+            <a href="{% url 'update_journey' journey.pk %}">Update</a>
+            <a href="{% url 'cancel_journey' journey.pk %}">Cancel</a>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <h2>Participants</h2>
+            <ul>
+                {% with has_accepted_requests=False %}
+                {% for request in requests %}
+                    {% if request.status == 1 %}
+                        {% with has_accepted_requests=True %}
+                            {% if user == request.requester %}
+                                <li>Your request has been accepted.
+                                    <br>
+                                    <a href="{% url 'withdraw_request' request.pk %}">Withdraw</a>
+                                </li>
+                            {% else %}
+                                <li><a href="{% url 'profile' request.requester.userprofile.pk %}">{{ request.user }}</a> - Accepted</li>
+                            {% endif %}
+                        {% endwith %}
+                    {% elif request.status == 0 %}
+                        {% if user == journey.creator %}
+                            <li>
+                                <a href="{% url 'profile' request.requester.userprofile.pk %}">{{ request.user }}</a> - Pending
+                                <br>
+                                <a href="{% url 'accept_request' request.pk %}">Accept</a>
+                                <a href="{% url 'reject_request' request.pk %}">Reject</a>
+                            </li>
+                        {% elif request.requester == user %}
+                            <li>Your request is pending.
+                                <br>
+                                <a href="{% url 'withdraw_request' request.pk %}">Withdraw</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            
+                {% if not has_accepted_requests %}
+                    <li>No requests have been accepted yet.</li>
+                {% endif %}
+            {% endwith %}
+            
+            </ul>
+            {% if can_join  %}
+            <a href="{% url 'create_request' journey.pk %}">Request to join</a>
+            {% endif %}
+            <h2>Meeting Details</h2>
+            
+            {% if active_meeting %}
+                <p><strong>Time:</strong> {{ meeting.meeting_time }}</p>
+                {% if meeting.description %}
+                    <p><strong>Description:</strong> {{ meeting.description }}</p>
+                {% endif %}
+            {% else %}
+                <p>No meeting scheduled.</p>
+            {% endif %}
+            {% if user == journey.creator %}
+            <h3>Proposed Meeting Locations</h3>
+            <ul>
+                {% for meeting in meetings %}
+                {% if meeting.status == 0 %}
+                    <li>
+                        <a href="#" class="meeting-location" data-lat="{{ meeting.meeting_location_lat }}" data-lng="{{ meeting.meeting_location_long }}">
+                            {{ meeting.meeting_time }} - {{ meeting.description|default:"No description" }}
+                        </a>
+                        <br>
+                        <a href="{% url 'accept_meeting' meeting.pk %}">Accept</a>
+                        <a href="{% url 'reject_meeting' meeting.pk %}">Reject</a>
+                    </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            <a href="{% url 'create_meeting' journey.pk %}">Schedule meeting</a>
+            {% endif %}
+            <div id="meeting-map"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const journey = {
+        start_location_lat: '{{ journey.start_location_lat|escapejs }}',
+        start_location_long: '{{ journey.start_location_long|escapejs }}',
+        destination_lat: '{{ journey.destination_lat|escapejs }}',
+        destination_long: '{{ journey.destination_long|escapejs }}',
+    }
+
+    const active_meeting = {
+        meeting_location_lat: '{{ active_meeting.meeting_location_lat|escapejs }}',
+        meeting_location_long: '{{ active_meeting.meeting_location_long|escapejs }}',
+    }
+
+
+    const journeyMap = L.map('journey-map').setView([journey.start_location_lat, journey.start_location_long], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(journeyMap);
+
+    const startMarker = L.marker([journey.start_location_lat, journey.start_location_long])
+        .addTo(journeyMap)
+        .bindPopup("<b>Start</b>")
+        .openPopup();
+
+    const endMarker = L.marker([journey.destination_lat, journey.destination_long])
+        .addTo(journeyMap)
+        .bindPopup("<b>End</b>")
+        .openPopup();
+
+    const routeLine = L.polyline([startMarker.getLatLng(), endMarker.getLatLng()], { color: 'blue' }).addTo(journeyMap);
+
+    if (active_meeting.meeting_location_lat) {
+        const meetingMarker = L.marker([active_meeting.meeting_location_lat, meeting.meeting_location_long])
+            .addTo(journeyMap)
+            .bindPopup("<b>Meeting Location</b>")
+            .openPopup();
+    }
+    const meetingMap = L.map('meeting-map').setView([journey.start_location_lat, journey.start_location_long], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(meetingMap);
+
+    document.querySelectorAll('.meeting-location').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            const lat = link.getAttribute('data-lat');
+            const lng = link.getAttribute('data-lng');
+
+            if (window.meetingMarker) {
+                meetingMap.removeLayer(window.meetingMarker);
+            }
+
+            window.meetingMarker = L.marker([lat, lng])
+                .addTo(meetingMap)
+                .bindPopup("<b>Proposed Meeting Location</b>")
+                .openPopup();
+
+            meetingMap.panTo([lat, lng]);
+        }); 
+    });
+</script>
+{% endblock %}

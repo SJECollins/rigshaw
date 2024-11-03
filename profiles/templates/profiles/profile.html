@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                {% if profile.picture %}
+                <img src="{{ profile.picture.url }}" alt="{{ profile.username }}" class="img-thumbnail">
+                {% else %}
+                <img src="{% static 'profile/user.png' %}" alt="{{ profile.username }}" class="img-thumbnail">
+                {% endif %}
+                <h1>{{ profile.name }}</h1>
+                <p>Joined: {{ profile.joined }}</p>
+                {% if user.userprofile.id == profile.id %}
+                <a href="{% url 'update_profile' %}" class="btn btn-primary">Edit profile</a>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <h2>Stats</h2>
+                <p>Rating: {{profile.avg_rating}}</p>
+                <p>Total journeys: {{total_journeys}}</p>
+                <p>Last journey: {% if last_journey %}<a href="{% url 'journey' last_journey.id %}">{{ last_journey }}</a>{% else %}None{% endif %} </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
