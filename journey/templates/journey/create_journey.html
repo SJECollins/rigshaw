@@ -4,7 +4,7 @@
 
 {% block content %}
 <div id="map"></div>
-<button id="clear" class="btn btn-danger">Reset Selection</button>
+<button id="clear" class="danger">Reset Selection</button>
 
 <form method="POST">
     {% csrf_token %}
@@ -20,7 +20,7 @@
         {{ meeting_form|crispy }}
     </div>
     
-    <button type="submit" class="btn btn-primary">Create Journey</button>
+    <button type="submit">Create Journey</button>
 </form>
 
 {% endblock %}

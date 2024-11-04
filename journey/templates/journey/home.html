@@ -4,31 +4,32 @@
     <div class="container">
         <div class="row">
             {% if user.is_authenticated %}
+            <h1>Welcome, {{ user.userprofile.name }}!</h1>
             <div class="col-md-6">
-                <h1>Welcome, {{ user.username }}!</h1>
                 {% if upcoming_journey %}
-                    <h2>Upcoming Journey:</h2>
+                    <h2>Next Journey:</h2>
                     <p>{{upcoming_journey}}</p>
-                    <a class="btn btn-primary" href="{% url 'journey_detail' upcoming_journey.id %}">View</a>
+                    <a class="btns" href="{% url 'journey_detail' upcoming_journey.id %}">View</a>
                 {% else %}
                     <p>You have no upcoming journeys.</p>
                 {% endif %}
-                <a class="btn btn-primary" href="{% url 'journey_create' %}">Create a Journey</a>
+                <a class="btns" href="{% url 'journey_create' %}">Create a Journey</a>
             </div>
             <div class="col-md-6">
-                <h1>Journeys</h1>
+                <h2>Available Journeys</h2>
                 <ul>
                     {% for journey in journeys %}
                         <li>
-                            <a href="{% url 'journey_detail' journey.id %}">{{ journey.title }}</a>
+                            <a class="links" href="{% url 'journey_detail' journey.id %}">{{ journey.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
                 <form method="get">
-                    <input type="text" name="search" placeholder="Search">
+                    <input type="text" class="form-control" name="search" placeholder="Search">
                     <button type="submit">Search</button>
+                    <a class="btns" href="{% url 'home' %}">Reset</a>
                 </form>
-                <a class="btn btn-primary" href="{% url 'home' %}">Reset</a>
+                
             </div>
             {% else %}
             <div class="col-md-12">

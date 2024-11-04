@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+import json
 
 from .models import Journey, Request, Meeting
 from .forms import JourneyForm, RequestForm, MeetingForm
@@ -16,7 +17,7 @@ def home(request):
     upcoming_journey = Journey.objects.filter(
         Q(creator=request.user, status=0) |
         Q(request__requester=request.user, request__status__in=[0, 1], status=0)
-    ).first()
+    ).last()
     journeys = []
     
     search = request.GET.get('search')
@@ -129,7 +130,9 @@ def journey_detail(request, pk):
     journey = Journey.objects.get(pk=pk)
     requests = Request.objects.filter(journey=journey)
     meetings = Meeting.objects.filter(journey=journey)
-    active_meetings = meetings.filter(status=1).first()
+    has_accepted_requests = requests.filter(status=1).exists()
+    active_meeting = meetings.filter(status=1).first()
+
     can_join = True
     if request.user == journey.creator:
         can_join = False
@@ -139,6 +142,8 @@ def journey_detail(request, pk):
                 can_join = False
                 break
     
+    # Checking if can review - should also check about status of journey??
+    # Also need to decide what to do about updating journey statuses
     journey_datetime = timezone.make_aware(datetime.combine(journey.date, journey.time))
     review_eligibility = {}
     if journey_datetime < timezone.now() + timedelta(hours=1):    
@@ -153,14 +158,20 @@ def journey_detail(request, pk):
 
         creator_eligible = not journey_canceled
         review_eligibility[journey.creator.id] = creator_eligible
+        
+    is_participant = request.user == journey.creator or any(
+        req.requester == request.user for req in requests
+    )
     
     context = {
         'journey': journey,
         'requests': requests,
         'meetings': meetings,
-        'active_meetings': active_meetings,
+        'active_meeting': active_meeting,
         'can_join': can_join,
-        'review_eligibility': review_eligibility
+        'review_eligibility': review_eligibility,
+        'has_accepted_requests': has_accepted_requests,
+        'is_participant': is_participant
     }
     return render(request, 'journey/journey.html', context)
 
@@ -234,28 +245,28 @@ def update_request(request, pk):
 
 @login_required
 def withdraw_request(request, pk):
-    request = Request.objects.get(pk=pk)
-    request.withdraw_message = request.POST.get('withdraw_message')
-    request.status = 3
-    request.save()
+    req = Request.objects.get(pk=pk)
+    req.withdraw_message = request.POST.get('withdraw_message')
+    req.status = 3
+    req.save()
     messages.success(request, 'Request withdrawn')
     return redirect('home')
 
 
 @login_required
 def accept_request(request, pk):
-    request = Request.objects.get(pk=pk)
-    request.status = 2
-    request.save()
+    req = Request.objects.get(pk=pk)
+    req.status = 1
+    req.save()
     messages.success(request, 'Request accepted')
     return redirect('home')
 
 
 @login_required
 def reject_request(request, pk):
-    request = Request.objects.get(pk=pk)
-    request.status = 1
-    request.save()
+    req = Request.objects.get(pk=pk)
+    req.status = 2
+    req.save()
     messages.success(request, 'Request rejected')
     return redirect('home')
 

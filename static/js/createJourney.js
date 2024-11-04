@@ -6,10 +6,26 @@ document
 
     meetingForm.style.display = isChecked ? "block" : "none";
 
-    document.getElementById("id_meeting_location_lat").required = isChecked;
-    document.getElementById("id_meeting_location_long").required = isChecked;
-    document.getElementById("id_meeting_time").required = isChecked;
+    if (isChecked) {
+      document
+        .getElementById("id_meeting_location_lat")
+        .setAttribute("required", true);
+      document
+        .getElementById("id_meeting_location_long")
+        .setAttribute("required", true);
+      document.getElementById("id_meeting_time").setAttribute("required", true);
+    } else {
+      document
+        .getElementById("id_meeting_location_lat")
+        .removeAttribute("required");
+      document
+        .getElementById("id_meeting_location_long")
+        .removeAttribute("required");
+      document.getElementById("id_meeting_time").removeAttribute("required");
+    }
   });
+
+let startMarker, endMarker, routeLine, meetingMarker;
 
 map.on("click", function (e) {
   const clickedCoords = e.latlng;

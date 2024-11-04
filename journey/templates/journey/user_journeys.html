@@ -4,49 +4,49 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h1>My Journeys</h1>
-            <ul>
-                {% for journey in journeys %}
-                <li>
-                    <a href="{% url 'journey_detail' journey.pk %}">{{ journey.title }}</a>
-                    <br>
-                    Date: {{ journey.date }}
-                    <br>
-                    Time: {{ journey.time }}
-                    <br>
-                    Status: {{ journey.get_status_display }}
-                    <br>
-                    Created by: <a href="{% url 'profile' journey.creator.pk %}">{{ journey.creator }}</a>
-                    <br>
-                    <a href="{% url 'update_journey' journey.pk %}">Update</a>
-                    <a href="{% url 'cancel_journey' journey.pk %}">Cancel</a>
-                </li>
-                {% empty %}
-                <li>No journeys.</li>
-                {% endfor %}
-            </ul>
+            <h2>Your Journeys</h2>
+            <small>Journeys you've created.</small>
+            {% for journey in journeys %}
+                <div class="card mb-4" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title"><a class="links" href="{% url 'journey_detail' journey.pk %}">{{ journey.title }}</a></h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Status: {{ journey.get_status_display }}</h6>
+                        <p class="card-text">
+                        Date: {{ journey.date }}
+                        <br>
+                        Time: {{ journey.time }}
+                        </p>
+                        <a class="btns" href="{% url 'update_journey' journey.pk %}">Update</a>
+                        <a class="btns" href="{% url 'cancel_journey' journey.pk %}">Cancel</a>
+                    </div>
+                </div>
+            {% empty %}
+            <p>No journeys found.</p>
+            {% endfor %}
+            <a class="btns" href="{% url 'journey_create' %}">Create a Journey</a>
         </div>
         <div class="col-md-6">
-            <h2>My Requests</h2>
-            <ul>
-                {% for request in requests %}
-                <li>
-                    <a href="{% url 'journey_detail' request.journey.pk %}">{{ request.journey.title }}</a>
-                    <br>
+            <h2>Your Requests</h2>
+            <small>Requests you've made to join journeys.</small>
+            {% for request in requests %}
+            <div class="card mb-4" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title"><a class="links" href="{% url 'journey_detail' request.journey.pk %}">{{ request.journey.title }}</a></h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Status: {{ request.get_status_display }}</h6>
+                    <p class="card-text">
                     Date: {{ request.journey.date }}
                     <br>
                     Time: {{ request.journey.time }}
                     <br>
-                    Status: {{ request.get_status_display }}
-                    <br>
-                    Created by: <a href="{% url 'profile' request.journey.creator.pk %}">{{ request.journey.creator }}</a>
-                    <br>
-                    <a href="{% url 'update_request' request.pk %}">Update</a>
-                    <a href="{% url 'withdraw_request' request.pk %}">Withdraw</a>
-                </li>
-                {% empty %}
-                <li>No requests.</li>
-                {% endfor %}
+                    Journey Owner: <a href="{% url 'profile' request.journey.creator.pk %}">{{ request.journey.creator.userprofile.name }}</a>
+                    </p>
+                    <a class="btns" href="{% url 'update_request' request.pk %}">Update</a>
+                    <a class="btns" href="{% url 'withdraw_request' request.pk %}">Withdraw</a>
+                </div>
+                </div>
+            {% empty %}
+            <p>No requests found.</p>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

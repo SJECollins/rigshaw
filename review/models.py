@@ -13,7 +13,7 @@ class Review(models.Model):
     reviewed_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.rating + ' by ' + self.reviewer.username + ' for ' + self.reviewee.username
+        return f"{self.rating} by {self.reviewer.username} for {self.reviewee.username}"
     
     class Meta:
         ordering = ['-reviewed_at']

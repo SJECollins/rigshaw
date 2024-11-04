@@ -39,7 +39,7 @@ class Journey(models.Model):
     status = models.IntegerField(choices=JOURNEY_STATUS, default=0)
     
     def __str__(self):
-        return self.title + ' by ' + self.creator.username
+        return self.title + ' by ' + self.creator.userprofile.name
 
     class Meta:
         ordering = ['-posted_at']

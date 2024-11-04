@@ -13,8 +13,9 @@ def update_avg_rating(reviewee):
     else:
         average_rating = Decimal("0.00")
 
-    reviewee.avg_rating = average_rating
-    reviewee.save()
+    reviewee.userprofile.avg_rating = average_rating
+    print(reviewee.userprofile.avg_rating)
+    reviewee.userprofile.save()
 
 
 @receiver(post_save, sender=Review)

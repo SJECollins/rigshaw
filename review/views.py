@@ -32,11 +32,12 @@ class CreateReview(LoginRequiredMixin, generic.CreateView):
     model = Review
     fields = ['rating', 'comment']
     template_name = 'reviews/create_review.html'
+    success_url = '/'
 
     def form_valid(self, form):
         form.instance.reviewer = self.request.user
         reviewee = self.kwargs['reviewee']
-        form.instance.reviewee = User.objects.get(username=reviewee)
+        form.instance.reviewee = User.objects.get(pk=reviewee)
         journey = self.kwargs['journey']
         form.instance.journey = Journey.objects.get(pk=journey)
         return super().form_valid(form)

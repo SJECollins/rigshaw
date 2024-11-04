@@ -10,10 +10,10 @@
             <form method="post">
                 {% csrf_token %}
                 {{ meeting_form|crispy }}
-                <button type="submit" class="btn btn-primary">Suggest Meeting</button>
+                <button type="submit">Suggest Meeting</button>
             </form>
-            <div id="map" style="height: 300px;"></div>
-            <button id="clear" class="btn btn-danger">Clear</button>
+            <div id="map"></div>
+            <button id="clear" class="danger">Clear</button>
         </div>
     </div>
 </div>

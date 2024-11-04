@@ -1,8 +1,76 @@
+:root {
+  --taxi-black: #383838;
+  --taxi-grey: #d2dddb;
+  --taxi-yellow: #feda15;
+  --taxi-white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--taxi-white);
+  color: var(--taxi-black);
+}
+
+.navbar {
+  background-color: var(--taxi-yellow) !important;
+  box-shadow: 0 2px 0 var(--taxi-grey);
+  margin-bottom: 10px;
+}
+
+button,
+.btns {
+  background-color: var(--taxi-yellow);
+  color: var(--taxi-black);
+  border: none;
+  padding: 6px 10px;
+  margin: 4px;
+  line-height: normal;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.danger {
+  background-color: var(--taxi-black);
+  color: var(--taxi-white);
+}
+
+button:hover,
+.btns:hover {
+  background-color: var(--taxi-grey);
+  color: var(--taxi-white);
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--taxi-black);
+}
+
+a:hover {
+  color: var(--taxi-white);
+}
+
+.links:hover {
+  color: var(--taxi-black);
+  text-decoration: underline;
+}
+
 #map,
 #journey-map,
 #meeting-map {
   height: 400px;
   width: 100%;
+  margin: 10px 0;
 }
 
 main {
@@ -10,4 +78,15 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.custom-alert {
+  min-width: 300px;
+  position: fixed;
+  top: 6em;
+  right: 1em;
+  padding: 0.5em;
+  background-color: var(--taxi-white);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px 0 var(--taxi-grey);
 }
