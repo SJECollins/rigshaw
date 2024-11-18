@@ -16,8 +16,9 @@ def home(request):
     
     upcoming_journey = Journey.objects.filter(
         Q(creator=request.user, status=0) |
-        Q(request__requester=request.user, request__status__in=[0, 1], status=0)
-    ).last()
+        Q(request__requester=request.user, request__status__in=[0, 1], status=0),
+        date__gte=datetime.now().date()
+        ).order_by('date', 'time').first()
     journeys = []
     
     search = request.GET.get('search')
@@ -29,7 +30,7 @@ def home(request):
         
     context = {
         'upcoming_journey': upcoming_journey,
-        'journeys': journeys
+        'journeys': journeys.filter(date__gte=datetime.now().date())
     }
     return render(request, 'journey/home.html', context)
 

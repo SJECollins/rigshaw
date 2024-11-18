@@ -5,9 +5,10 @@
         <div class="row">
             {% if user.is_authenticated %}
             <h1>Welcome, {{ user.userprofile.name }}!</h1>
+            <hr>
             <div class="col-md-6">
                 {% if upcoming_journey %}
-                    <h2>Next Journey:</h2>
+                    <h2>Your Next Journey:</h2>
                     <p>{{upcoming_journey}}</p>
                     <a class="btns" href="{% url 'journey_detail' upcoming_journey.id %}">View</a>
                 {% else %}
@@ -33,8 +34,11 @@
             </div>
             {% else %}
             <div class="col-md-12">
-                <h1>Welcome!</h1>
-                <p>Please <a href="{% url 'account_login' %}">log in</a> to see your journeys.</p>
+                <h1>Welcome to Rigshaw!</h1>
+                <p>Rigshaw is a platform for sharing taxi rides. You can create a journey, share it with others, and join other people's journeys.</p>
+                <p>Get started by creating an account or logging in.</p>
+                <a class="btns" href="{% url 'account_signup' %}">Sign Up</a>
+                <a class="btns" href="{% url 'account_login' %}">Log In</a>
             </div>
             {% endif %}
         </div>

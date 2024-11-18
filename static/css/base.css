@@ -26,6 +26,8 @@ button,
 .btns {
   background-color: var(--taxi-yellow);
   color: var(--taxi-black);
+  font-weight: bold;
+
   border: none;
   padding: 6px 10px;
   margin: 4px;
@@ -44,10 +46,10 @@ button:hover,
 .btns:hover {
   background-color: var(--taxi-grey);
   color: var(--taxi-white);
-  font-weight: bold;
 }
 
-ul {
+ul,
+li {
   list-style-type: none;
 }
 
@@ -55,14 +57,19 @@ a {
   text-decoration: none;
   color: var(--taxi-black);
 }
-
+/* 
 a:hover {
   color: var(--taxi-white);
-}
+} */
 
 .links:hover {
   color: var(--taxi-black);
   text-decoration: underline;
+}
+
+hr {
+  border-top: 1px solid var(--taxi-yellow);
+  margin: 20px 0;
 }
 
 #map,

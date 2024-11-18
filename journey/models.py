@@ -50,7 +50,7 @@ class Request(models.Model):
     requester = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     request_message = models.CharField(max_length=255)
-    withdraw_message = models.CharField(max_length=255, blank=True)
+    withdraw_message = models.CharField(max_length=255, blank=True, null=True)
     withdrawn_at = models.DateTimeField(null=True, blank=True)
     status = models.IntegerField(choices=REQUEST_STATUS, default=0)
     

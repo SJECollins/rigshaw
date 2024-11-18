@@ -13,7 +13,7 @@
                 <h1>{{ profile.name }}</h1>
                 <p>Joined: {{ profile.joined }}</p>
                 {% if user.userprofile.id == profile.id %}
-                <a href="{% url 'update_profile' %}" class="btn btn-primary">Edit profile</a>
+                <a class="btns" href="{% url 'update_profile' %}">Edit Profile</a>
                 {% endif %}
             </div>
             <div class="col-md-6">

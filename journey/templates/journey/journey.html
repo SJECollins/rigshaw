@@ -10,7 +10,7 @@
             <p>Date: {{ journey.date }}</p>
             <p>Time: {{ journey.time }}</p>
             <p>Status: {{ journey.get_status_display }}</p>
-            <p>Created by: <a href="{% url 'profile' journey.creator.userprofile.pk %}">{{ journey.creator }}</a></p>
+            <p>Created by: <a class="links" href="{% url 'profile' journey.creator.userprofile.pk %}">{{ journey.creator }}</a></p>
             {% if review_eligibility|get_item:journey.creator.id and not user == journey.creator and is_participant %}
                 <a class="btns" href="{% url 'create_review' journey=journey.pk reviewee=journey.creator.pk %}">Leave a review</a>
             {% endif %}
@@ -37,7 +37,7 @@
                         </li>
                     {% else %}
                         <li class="mb-4">
-                            <a href="{% url 'profile' request.requester.userprofile.pk %}">{{ request.requester.userprofile.name }}</a> - Accepted
+                            <a class="links" href="{% url 'profile' request.requester.userprofile.pk %}">{{ request.requester.userprofile.name }}</a> - Accepted
                             {% if review_eligibility|get_item:request.requester.id and not user == request.requester and is_participant %}
                             <br>
                                 <a class="btns" href="{% url 'create_review' journey=journey.pk reviewee=request.requester.pk %}">Leave a review</a>
@@ -91,7 +91,7 @@
                 {% endif %}
                 {% endfor %}
             </ul>
-            <a class="btns" href="{% url 'create_meeting' journey.pk %}">Propose meeting</a>
+            <a class="btns" href="{% url 'create_meeting' journey.pk %}">Propose Meeting</a>
             {% endif %}
             <div id="meeting-map"></div>
         </div>
